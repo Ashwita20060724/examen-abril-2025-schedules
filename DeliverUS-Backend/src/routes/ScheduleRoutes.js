@@ -7,6 +7,40 @@ import * as RestaurantMiddleware from '../middlewares/RestaurantMiddleware.js'
 import { Schedule, Restaurant } from '../models/models.js'
 
 const loadScheduleRoutes = function (app) {
+    app.route('/restaurants/:restaurantId/schedules')
+    .get(
+        checkEntityExists(Restaurant, 'restaurantId'),
+        ScheduleController.indexRestaurant
+    )
+    .post(
+        isLoggedIn,
+        hasRole('owner'),
+        checkEntityExists(Restaurant, 'restaurantId'),
+        RestaurantMiddleware.checkRestaurantOwnership,
+        ScheduleValidation.create,
+        handleValidation,
+        ScheduleController.create
+    )
+
+    app.route('/restaurants/:restaurantId/schedules/:scheduleId')
+    .put(
+        isLoggedIn,
+        hasRole('owner'),
+        checkEntityExists(Restaurant, 'restaurantId'),
+        checkEntityExists(Schedule, 'scheduleId'),
+        RestaurantMiddleware.checkRestaurantOwnership,
+        ScheduleValidation.update,
+        handleValidation,
+        ScheduleController.update
+    )
+    .delete(
+        isLoggedIn,
+        hasRole('owner'),
+        checkEntityExists(Restaurant, 'restaurantId'),
+        checkEntityExists(Schedule, 'scheduleId'),
+        RestaurantMiddleware.checkRestaurantOwnership,
+        ScheduleController.destroy
+    )
 
 }
 

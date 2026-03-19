@@ -17,11 +17,23 @@ const validateEndTimeAfterStartTime = (endTime, { req }) => {
 }
 
 const create = [
-
+  check('startTime').exists().withMessage('Start Time is requiered')
+  .notEmpty().withMessage('Start time cannot be empty')
+  .custom(validateTimeFormat),
+  check('endTime').exists().withMessage('Start Time is requiered')
+  .notEmpty().withMessage('Start time cannot be empty')
+  .custom(validateTimeFormat)
+  .custom(validateEndTimeAfterStartTime)
 ]
 
 const update = [
-
+  check('startTime').exists().withMessage('Start Time is requiered')
+  .notEmpty().withMessage('Start time cannot be empty')
+  .custom(validateTimeFormat),
+  check('endTime').exists().withMessage('Start Time is requiered')
+  .notEmpty().withMessage('Start time cannot be empty')
+  .custom(validateTimeFormat)
+  .custom(validateEndTimeAfterStartTime)
 ]
 
 export { create, update }
