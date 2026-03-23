@@ -14,6 +14,9 @@ const loadModel = (sequelize, DataTypes) => {
       Restaurant.belongsTo(models.User, { foreignKey: 'userId', as: 'user' })
       Restaurant.hasMany(models.Product, { foreignKey: 'restaurantId', as: 'products' })
       Restaurant.hasMany(models.Order, { foreignKey: 'restaurantId', as: 'orders' })
+      
+      // 1 RESATURANTE PERTENECE A VARIOS HORARIOS
+      Restaurant.hasMany(models.Schedule, { foreignKey: 'restaurantId', as: 'schedules'})
     }
 
     async getAverageServiceTime () {

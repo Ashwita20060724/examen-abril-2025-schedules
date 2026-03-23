@@ -16,62 +16,64 @@ const checkRestaurantExists = async (value, { req }) => {
 }
 
 const checkScheduleBelongsToRestaurantOnCreate = async (value, { req }) => {
-  try{
-    //CASO 1: SI NO SE ENVÍA SCHEDULEID, NO VALIDAMOS NADA
+  try {
+    const scheduleId = req.body.scheduleId
+    const restaurantId = req.body.restaurantId
+    const schedule = await Schedule.findByPk(scheduleId)
+
+    //SI EL VALUE QUE ME DAN ESTÁ VACÍO NO SE VALIDA
     if(!value){
       return Promise.resolve()
     }
 
-
-    // EL VALUE ES EL SCHEDULE ID 
-    const schedule = await Schedule.findByPk(value)
-    //CASO 2: SI EL HORARIO ESTÁ VACÍO
-    if(schedule === null){
-      return Promise.reject(new Error('The scheduleId does not exist.'))
+    //SI NO EXISTE HORARIO
+    if(schedule === null) {
+      return Promise.reject(new Error('The scheduleId does not exist'))
     }
-
-    //CASO 3: COMPROBAR QUE PERTENECE AL RESTAURANTE ENVIADO DESDE BODY
-    if(schedule.restaurantId !== req.body.restaurantId){
-      return Promise.reject(new Error('The schedule does not belong to the restaurant'))
+    //SI EXISTE HORARIO PERO NO PERTENECE A ESE RESTAURANTE
+    if(schedule.restaurantId !== restaurantId){
+      return Promise.reject(new Error('This schedule does not belong to this restaurant'))
     }
 
     return Promise.resolve()
 
-  }catch(err){
+  } catch(err) {
     return Promise.reject(new Error(err))
   }
 }
 
 const checkScheduleBelongsToRestaurantOnUpdate = async (value, { req }) => {
-    try{
-    //CASO 1: SI NO SE ENVÍA SCHEDULEID, NO VALIDAMOS NADA
-    if(!value){
+    try {
+      const scheduleId = req.body.scheduleId
+      const productoId = req.params.productoId
+      const schedule = await Schedule.findByPk(scheduleId)
+      const products = await Product.findByPk(productoId)
+      const restauranteId = products.restaurantId
+
+      //SI NO ME PASAN HORARIO POR PARÁMETRO
+     if(!scheduleId) {
       return Promise.resolve()
+     }
+
+      //SI EL PRODUCT QUE ME DAN ESTÁ VACÍO NO SE VALIDA
+      if(!products){
+       return Promise.reject(new Error('This product does not exist'))
+     }
+
+      //SI NO EXISTE HORARIO
+      if(schedule === null) {
+        return Promise.reject(new Error('The scheduleId does not exist'))
+      }
+      //SI EXISTE HORARIO PERO NO PERTENECE AL
+      // PRODUCTO DEL RESTAURANTE
+      if(schedule.restaurantId !== restauranteId){
+        return Promise.reject(new Error('This schedule does not belong to this restaurant'))
+      }
+
+      return Promise.resolve()
+    } catch(err){
+      return Promise.reject(new Error(err))
     }
-
-    //CASO 2: OBTENER EL PRODUCTO PARA SABER SU RESTAURANTEID
-    const product = await Product.findByPk(req.params.productId)
-    if(product === null){
-      return Promise.reject(new Error('Product not found'))
-    }
-
-    // EL VALUE ES EL SCHEDULE ID 
-    const schedule = await Schedule.findByPk(value)
-    //CASO 3: SI EL HORARIO ESTÁ VACÍO
-    if(schedule === null){
-      return Promise.reject(new Error('The scheduleId does not exist.'))
-    }
-
-    //CASO 3: COMPROBAR QUE PERTENECE AL RESTAURANTE ENVIADO DESDE BODY
-    if(schedule.restaurantId !== product.restaurantId){
-      return Promise.reject(new Error('The schedule does not belong to the restaurant'))
-    }
-
-    return Promise.resolve()
-
-  }catch(err){
-    return Promise.reject(new Error(err))
-  }
 }
 
 const create = [

@@ -2,57 +2,65 @@ import { Schedule } from '../models/models.js'
 
 const indexRestaurant = async function (req, res) {
   try{
-    const schedule = await Schedule.findAll(
-      { where:{
+    const schedules = await Schedule.findAll(
+      {where: {
         restaurantId: req.params.restaurantId
-      }
-    }
+      }}
     )
-    res.json(schedule)
+    res.json(schedules)
   } catch(err){
-    res.status(404).send('Restaurante no existe')
+    res.status(500).send(err)
   }
 }
 
 const create = async function (req, res) {
   try{
-    const schedule = await Schedule.create({
-      startTime: req.body.startTime,
-      endTime: req.body.endTime,
-      // productoId: req.params.productoId, NO SE PONE PORQUE NO ESTÁ
-      // DEFINIDO EN ROUTES
-      restaurantId: req.params.restaurantId
-    })
-    res.json(schedule)
+    const newSchedule = await Schedule.build(req.body)
+    newSchedule.restaurantId = req.params.restaurantId
+
+    const createRestaurant = await newSchedule.save()
+    res.json(createRestaurant)
   } catch(err){
-    res.status(500).send(err.message)
+    res.status(500).send(err)
   }
 }
 
 const update = async function (req, res) {
   try{
-    const schedule = await schedule.findByPk(req.params.scheduleId)
-    await schedule.update(req.body)
-    res.json(schedule)
-  }catch(err){
-    res.status(500).send(err.message)
+    const currentSchedules = await Schedule.findByPK(
+      req.params.scheduleId
+    )
+
+    currentSchedules.startTime = req.body.startTime
+    currentSchedules.endTime = req.body.endTime
+
+    const updatedSchedules = await currentSchedules.save()
+    
+    res.json(updatedSchedules)
+  } catch(err){
+    res.status(500).send(err)
   }
 }
 
 const destroy = async function (req, res) {
   try{
-    const schedule = await Schedule.destroy({
-      where: {id: req.params.scheduleId}
-    })
+    const result = await Schedule.destroy(
+      {
+        where: {
+          id: req.params.scheduleId
+        }
+      }
+    )
     let message = ''
-    if(schedule === 1){
-      message = 'Sucessfully deleted schedule id' + req.params.scheduleId
-    } else{
+    if(result === 1){
+      message = 'Succesfully deleted schedule id' + req.params.scheduleId
+    }
+    else{
       message = 'Could not delete schedule'
     }
     res.json(message)
   } catch(err){
-    res.status(500).send(err.message)
+    res.status(500).send(err)
   }
 }
 

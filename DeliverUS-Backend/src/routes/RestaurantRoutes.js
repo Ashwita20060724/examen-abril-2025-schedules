@@ -62,5 +62,10 @@ const loadFileRoutes = function (app) {
       checkEntityExists(Restaurant, 'restaurantId'),
       RestaurantMiddleware.checkRestaurantOwnership,
       OrderController.analytics)
+  
+  app.route('/:restaurantId/showWithActiveProducts')
+  .get(
+    RestaurantController.showWithActiveProducts
+  )
 }
 export default loadFileRoutes

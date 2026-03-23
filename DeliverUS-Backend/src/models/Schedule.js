@@ -9,36 +9,32 @@ const loadModel = (sequelize, DataTypes) => {
      */
     static associate (models) {
       Schedule.belongsTo(models.Product, {foreignKey: 'productId', onDelete: 'CASCADE'})
-      Schedule.belongsTo(models.Restauran, {foreignKey: 'restaurantId', onDelete: 'CASCADE'})
+      Schedule.belongsTo(models.Restaurant, {foreignKey: 'restaurantId', onDelete: 'CASCADE'})
     }
   }
 
   Schedule.init({
     startTime: {
       allowNull: false,
-      type: sequelize.TIME
+      type: DataTypes.TIME
     },
     endTime: {
       allowNull: false,
-      type: sequelize.TIME
-    },
-    productId: {
-      allowNull: false,
-      type: sequelize.INTEGER,
-      references: {
-        model: 'Products',
-        key: 'id'
-      },
-      onDelete:'CASCADE'
+      type: DataTypes.TIME
     },
     restaurantId: {
       allowNull: false,
-      type: sequelize.INTEGER,
-      references: {
-        model: 'Restaurants',
-        key: 'id'
-      },
-      onDelete: 'CASCADE'
+      type: DataTypes.INTEGER
+    },
+    createdAt: {
+      allowNull: false,
+      type: DataTypes.DATE,
+      defaultValue: new Date()
+    },
+    updatedAt: {
+      allowNull: false,
+      type: DataTypes.DATE,
+      defaultValue: new Date()
     }
 
   }, {

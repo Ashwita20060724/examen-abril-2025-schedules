@@ -16,6 +16,9 @@ const loadModel = (sequelize, DataTypes) => {
       Product.belongsTo(models.Restaurant, { foreignKey: 'restaurantId', as: 'restaurant', onDelete: 'cascade' })
       Product.belongsTo(models.ProductCategory, { foreignKey: 'productCategoryId', as: 'productCategory' })
       Product.belongsToMany(models.Order, { as: 'orders', through: OrderProducts })
+
+      // VARIOS PRODUCTOS PERTENECEN A UN HORARIO
+      Product.belongsTo(models.Schedule, { foreignKey: 'scheduleId', as: 'schedules'})
     }
   }
   Product.init({

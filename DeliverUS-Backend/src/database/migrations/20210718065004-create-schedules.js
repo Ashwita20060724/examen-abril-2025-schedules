@@ -7,7 +7,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      startTime: {
+      startTime:{
         allowNull: false,
         type: Sequelize.TIME
       },
@@ -15,21 +15,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.TIME
       },
-      productId: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Products',
-          key: 'id'
-        },
-        onDelete: 'CASCADE'
-      },
       restaurantId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: 'Restaurants',
-          key: 'id'
+          key:'id'
         },
         onDelete: 'CASCADE'
       },

@@ -15,20 +15,19 @@ const loadScheduleRoutes = function (app) {
     .post(
         isLoggedIn,
         hasRole('owner'),
-        checkEntityExists(Restaurant, 'restaurantId'),
         RestaurantMiddleware.checkRestaurantOwnership,
+        checkEntityExists(Restaurant, 'restaurantId'),
         ScheduleValidation.create,
         handleValidation,
         ScheduleController.create
     )
-
     app.route('/restaurants/:restaurantId/schedules/:scheduleId')
     .put(
         isLoggedIn,
         hasRole('owner'),
+        RestaurantMiddleware.checkRestaurantOwnership,
         checkEntityExists(Restaurant, 'restaurantId'),
         checkEntityExists(Schedule, 'scheduleId'),
-        RestaurantMiddleware.checkRestaurantOwnership,
         ScheduleValidation.update,
         handleValidation,
         ScheduleController.update
@@ -36,12 +35,11 @@ const loadScheduleRoutes = function (app) {
     .delete(
         isLoggedIn,
         hasRole('owner'),
+        RestaurantMiddleware.checkRestaurantOwnership,
         checkEntityExists(Restaurant, 'restaurantId'),
         checkEntityExists(Schedule, 'scheduleId'),
-        RestaurantMiddleware.checkRestaurantOwnership,
         ScheduleController.destroy
     )
-
 }
 
 export default loadScheduleRoutes
